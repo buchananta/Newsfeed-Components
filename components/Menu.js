@@ -1,3 +1,4 @@
+import gsap from 'gsap';
 // This is the data we will be using, study it but don't change anything, yet.
 
 let menuItems = [
@@ -39,13 +40,29 @@ function transform(item, tag) {
 }
 function menuMaker(menuItems) {
   const menu = document.createElement('div');
+  menu.className = "menu";
   const ulist = document.createElement('ul');
   menu.appendChild(ulist);
   menuItems.forEach(item => ulist.appendChild(transform(item, 'li')));
-  //I keep forgetting my functions need to return things!
+  //add event listener to menubutton
+  const menuBtn = document.querySelector('.menu-button');
+  menuBtn.addEventListener('click', () => {
+    const menu = document.querySelector('.menu')
+    let menuAnimation = new gsap.timeline({paused:true});
+    menuAnimation.fromTo(menu, {height: '0vh'}, {height: '100vh', duration: 1});
+    if (!menu.classList.contains('menu--open')) {
+      menu.classList.add('menu--open');
+      menuAnimation.play();
+    } else {
+      //I could NOT get this to work, until I added the 1..
+      //and that's because, I'm actually making a _new_ _event_ 
+      //_every_ click!!!! ugh.
+      menuAnimation.reverse(1);
+      setTimeout(() => menu.classList.remove('menu--open'), 999);
+    }
+  })
   return menu;
 }
 
 const header = document.querySelector('.header');
-console.log(typeof(header));
 header.appendChild(menuMaker(menuItems));
